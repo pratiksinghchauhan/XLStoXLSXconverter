@@ -20,15 +20,15 @@ app.post('/upload',(req,res) => {
     form.parse(req, function (err, fields, files) {
       console.log(files);
       console.log(fields);
-      base64_decode(fields.data, 'test.xlsx');
+    //   base64_decode(fields.data, 'test.xlsx');
 
-    //   var oldpath = files.filetoupload.path;
-    //   var newpath = __dirname + "/" + files.filetoupload.name;
-    //   fs.rename(oldpath, newpath, function (err) {
-    //     if (err) throw err;
-    //     res.write('File uploaded and moved!');
-    //     res.end();
-    //   });
+      var oldpath = files.filetoupload.path;
+      var newpath = __dirname + "/" + files.filetoupload.name;
+      fs.rename(oldpath, newpath, function (err) {
+        if (err) throw err;
+        res.write('File uploaded and moved!');
+        res.end();
+      });
 })
 })
 

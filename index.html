@@ -38,16 +38,16 @@
                     console.log(typeof(file));
                     var workbook = XLSX.read(await file.arrayBuffer(), { type: "array" });
                     console.log(workbook);
-                    var wopts = { bookType:'xlsx', bookSST:false, type:'base64' };
+                    var wopts = { bookType:'xlsx', bookSST:false, type:'buffer' };
                     var wbout = XLSX.write(workbook,wopts);
-                    console.log(typeof(wbout));
+                    console.log(wbout);
                     console.log(wbout instanceof Blob);
                     var blob = new Blob([wbout], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
                     var formData = new FormData();
                     
-                    // formData.append('filetoupload', blob, 'test.xlsx');
-                    formData.append('file', 'test.xlsx');
-                    formData.append('data', wbout);
+                    formData.append('filetoupload', blob, 'test.xlsx');
+                    // formData.append('file', 'test.xlsx');
+                    // formData.append('data', wbout);
 
                     $.ajax({
                             url: '/upload',  
