@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <form id="form" action="/" method="post" enctype="multipart/form-data">
+            <input type="file" name="filetoupload" id="filetoupload"><br>
+            <input type="submit" id="submit">
+        </form>
+        <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script>
+            function blob2file(blobData) {
+                const fd = new FormData();
+                fd.set('a', blobData);
+                return fd.get('a');
+            }
+            $(document).ready(function () {
+               
+                $('#submit').click(async function (e) {
+                    e.preventDefault();
+                    // var formData = new FormData( $('#form')[0]);
+                    // console.log(formData);
+                    
+                    var file = $('#form')[0][0].files[0];
+
+                    console.log(file);
+                    console.log(file instanceof Blob);
+                    console.log(typeof(file));
+                    var workbook = XLSX.read(await file.arrayBuffer(), { type: "array" });
+                    console.log(workbook);
+                    var wopts = { bookType:'xlsx', bookSST:false, type:'base64' };
+                    var wbout = XLSX.write(workbook,wopts);
+                    console.log(typeof(wbout));
+                    console.log(wbout instanceof Blob);
+                    var blob = new Blob([wbout], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                    var formData = new FormData();
+                    
+                    // formData.append('filetoupload', blob, 'test.xlsx');
+                    formData.append('file', 'test.xlsx');
+                    formData.append('data', wbout);
+
+                    $.ajax({
+                            url: '/upload',  
+                            type: 'POST',
+                            data: formData,
+                            success:function(data){
+                                console.log(data);
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
